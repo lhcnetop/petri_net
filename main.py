@@ -11,7 +11,7 @@ max_protein_output=100
 
 
 ## Experiment of mrna 10*abundance
-chain_size_list=[100]
+chain_size_list=[30]
 
 for chain_size in chain_size_list:
     

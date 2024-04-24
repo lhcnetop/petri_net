@@ -18,7 +18,7 @@ def simulate_single_amino_n_transitions_petrinet(
         else:
             places_dict['m'+str(i)]=0
 
-
+    print(places_dict)
     pn=pnet.PNet(places_dict)
 
 
