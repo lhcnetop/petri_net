@@ -3,7 +3,7 @@ import pandas as pd
 import polars as pl
 import plotly.express as px
 
-from PN_n_transition_simulation import simulate_single_amino_n_transitions_petrinet
+from old_files.PN_n_transition_simulation import simulate_single_amino_n_transitions_petrinet
 
 num_simulations=1000
 max_protein_output=100

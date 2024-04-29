@@ -4,11 +4,14 @@ import copy
 rand=np.random
 
 class PNet:
-    def __init__(self,dict_places:dict):
+    def __init__(self,pnet_dict:dict):
+        dict_places=pnet_dict['places']
         self.initial_dict_places=copy.deepcopy(dict_places)
         self.transitions_dict={}
+        self.transition_count={}
+        transitions_array=pnet_dict['transitions']
+        self.add_multiple_transitions(transitions_array)
         self.reset()
-#        self._initialize_arrays()
         
     
     def reset(self):

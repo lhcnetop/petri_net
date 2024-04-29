@@ -1,4 +1,4 @@
-import pnet
+import petrinet
 import time as t
 import polars as pl
 
@@ -19,7 +19,7 @@ def simulate_single_amino_n_transitions_petrinet(
             places_dict['m'+str(i)]=0
 
     print(places_dict)
-    pn=pnet.PNet(places_dict)
+    pn=petrinet.PNet(places_dict)
 
 
     for i in range(chain_size):
