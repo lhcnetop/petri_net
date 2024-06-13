@@ -148,7 +148,7 @@ class PNet:
                 else:
                     raise InvalidLawException('Law parameter must be either "random" or "mass_action".')
                 if handler:
-                    handler(self,i)
+                    handler(copy.deepcopy(self.dict_places), copy.deepcopy(self.firing_sequence),i)
             except NoMoreValidTransitionsException:
                 #print(f"No more valid transitions, ending simulation at step: {i}")
                 break
