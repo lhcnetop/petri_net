@@ -7,22 +7,26 @@ valid_aminoacids_single_letter='ARNDCEQGHILKMFPSTWYVX'
 
 ## TODO: Permitir que seja passada uma OPN ao invés da PN, basta ter um conversor de OPN para PN
 
-class mRNAPNetBuilder: ##Alterar nome, dado que isso não implementa o padrão builder
-    def __init__(self,json_input:dict,save_to_file:str):
-        places_and_transitions=self.build_translation_pnet_from_sequence(json_input,save_to_file)
-        #self.pnet=pnet.PNet(places_and_transitions)
-        
+class mRNA2PNetAdapter: ##Alterar nome, dado que isso não implementa o padrão builder
+    def __init__(self,json_input:dict):
+        self.places_and_transitions=self.build_translation_pnet_from_sequence(json_input)
     
-    def build_translation_pnet_from_sequence(self,json_input:dict,save_to_file:str)->dict:
+    def get_pnet_json_dict(self)->dict:
+        return self.places_and_transitions
+
+    def get_json_string(self):
+        return json.dumps(self.places_and_transitions,indent=2)
+        
+    def save_to_file(self,save_to_file:str=''):
+        places_and_transitions_string=self.get_json_string()
+        with open(save_to_file,'w') as json_file:
+                json_file.write(places_and_transitions_string)
+
+    def build_translation_pnet_from_sequence(self,json_input:dict)->dict:
         chains=json_input["chains"]
         simulation_parameters=json_input["simulation_parameters"]
         self.validate_aminoacids(chains)
         places_and_transitions=self.build_places_and_transitions(chains, simulation_parameters)
-        if save_to_file:
-            print(f'PNet json saved at: {save_to_file}')
-            places_and_transitions_string=json.dumps(places_and_transitions,indent=2)
-            with open(save_to_file,'w') as json_file:
-                    json_file.write(places_and_transitions_string)
         return places_and_transitions
     
     def check_aminoacid_sequence_encoding(self,chain):
@@ -30,7 +34,7 @@ class mRNAPNetBuilder: ##Alterar nome, dado que isso não implementa o padrão b
                 return 'single'
         elif len(chain[0])==3:
             return 'triple'
-        raise InvalidmRNAPNetBuilderSequenceEncoding(f'Found sequence element ({chain[0]}) not in triple nor single letter standard encodings')
+        raise InvalidmRNASequenceEncodingException(f'Found sequence element ({chain[0]}) not in triple nor single letter standard encodings')
 
     def validate_aminoacids(self, chains):
         invalid_chain=False
@@ -73,13 +77,13 @@ class mRNAPNetBuilder: ##Alterar nome, dado que isso não implementa o padrão b
         '''
         
         for chain_obj in chains:
-            # Build the places for the mRNAPNetBuilder input sequence and protein output
+            # Build the places for the mRNA2PNetAdapter input sequence and protein output
             chain_name=chain_obj["name"]
             chain=chain_obj["sequence"]
             chain_output=chain_obj['polipeptide_name']
             chain_index=0
-            places_dict[chain_name+'_'+str(chain_index)]=initial_chains
-            places_dict[chain_output]=0
+            places_dict['p_'+chain_name+'_'+str(chain_index)]=initial_chains
+            places_dict['p_'+chain_output]=0
 
             #places_dict['enzyme']=0
 #            print(f'Cadeia {chain_name+'_'+str(chain_index)}:')
@@ -88,14 +92,14 @@ class mRNAPNetBuilder: ##Alterar nome, dado que isso não implementa o padrão b
             for amino in chain:
                 chain_index+=1
                 if chain_index<len(chain): # Here we skip the last part because we consider the translation done when the last aminoacid is attached, therefore, the last transition will simply output the protein
-                    places_dict[chain_name+'_'+str(chain_index)]=0
+                    places_dict['p_'+chain_name+'_'+str(chain_index)]=0
                     transitions_array.append({
-                            'name':chain_name+'_t'+str(chain_index),
-                            'consumes':{
+                            'name':'t_'+chain_name+'_t'+str(chain_index),
+                            'consume':{
                                 chain_name+'_'+str(chain_index-1):1,
                                 amino:1
                             },
-                            'produces':{
+                            'produce':{
                                 chain_name+'_'+str(chain_index):1
                             }
                         }
@@ -103,12 +107,12 @@ class mRNAPNetBuilder: ##Alterar nome, dado que isso não implementa o padrão b
 #                    print(f'Cadeia {chain_name+'_'+str(chain_index)}:{chain[:chain_index]}')
                 else:
                     transitions_array.append({
-                            'name':chain_name+'_t'+str(chain_index),
-                            'consumes':{
+                            'name':'t_'+chain_name+'_t'+str(chain_index),
+                            'consume':{
                                 chain_name+'_'+str(chain_index-1):1,
                                 amino:1
                             },
-                            'produces':{
+                            'produce':{
                                 chain_output:1
                             }
                         }
@@ -120,20 +124,20 @@ class mRNAPNetBuilder: ##Alterar nome, dado que isso não implementa o padrão b
 
         # Builds the places for the aminoacids
         for amino in amino_count:
-            places_dict[amino]=max_protein_output_goal*amino_count[amino]
+            places_dict['p_'+amino]=max_protein_output_goal*amino_count[amino]
         
         return {
             "places":places_dict,
             "transitions":transitions_array
         }
     
-class InvalidmRNAPNetBuilderSequenceEncoding(Exception):
+class InvalidmRNASequenceEncodingException(Exception):
     pass
 
 class InvalidAminoacidStringException(Exception):
     pass
 
 '''
-Considerando que a propria hipotese de abundancia relativa do mRNAPNetBuilder pode não ser muito verossímil, o punch mais interessante talvez seja a previsão de que, aumentar a disponibilidade
-de mRNAPNetBuilder ajuda apenas conforme a disponibilidade de aminoacidos, sendo prejudicial ao output a partir de determinado ponto (equilibrio perfeito entre a qtd de aminoacidos e de mRNAPNetBuilder)
+Considerando que a propria hipotese de abundancia relativa do mRNA2PNetAdapter pode não ser muito verossímil, o punch mais interessante talvez seja a previsão de que, aumentar a disponibilidade
+de mRNA2PNetAdapter ajuda apenas conforme a disponibilidade de aminoacidos, sendo prejudicial ao output a partir de determinado ponto (equilibrio perfeito entre a qtd de aminoacidos e de mRNA2PNetAdapter)
 '''

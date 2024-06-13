@@ -1,17 +1,20 @@
 import unittest
-import mrna.mRNAPNetBuilder as mRNAPNetBuilder
+import mrna.mrna2pnet as mrna
+import petrinet.pnet_validator as pnet_validator
+
+##  python -m unittest tests/mrna_tests.py -v
 
 json_input={
     "chains":[
         {
             "name":"chainA",
             "sequence":["Gly","Ile","Val","Glu","Gln","Cys","Thr","Ser","Ile","Cys","Ser","Leu","Tyr","Gln","Leu","Glu","Asn","Tyr","Cys","Asn"],
-            "polipeptide_name":"preprotoinsulin-A-chain"
+            "polipeptide_name":"preprotoinsulin_A_chain"
         },
         {
             "name":"chainB",
             "sequence":["Phe","Val","Asn","Gln","His","Leu","Cys","Gly","Ser","His","Leu","Val","Glu","Ala","Leu","Tyr","Leu","Val","Cys","Gly","Glu","Arg","Gly","Phe","Phe","Tyr","Thr","Pro","Lys","Ala"],
-            "polipeptide_name":"preprotoinsulin-B-chain"
+            "polipeptide_name":"preprotoinsulin_B_chain"
         }
     ],
     "simulation_parameters":{
@@ -23,8 +26,22 @@ json_input={
 
 class mRNATests(unittest.TestCase):
     def setUp(self) -> None:
-        self.mrna=mRNAPNetBuilder.mRNA(json_input)
+        self.mrna=mrna.mRNA2PNetAdapter(json_input)
         return super().setUp()
     
-    def checkInvalidInput(self):
-        self.assertRaises(mRNAPNetBuilder.InvalidmRNASequenceEncoding,self.mrna.check_aminoacid_sequence_encoding,['as'])
+    def test_rejects_invalid_encoding(self):
+        with self.assertRaises(mrna.InvalidmRNASequenceEncodingException):
+            self.mrna.check_aminoacid_sequence_encoding(['as'])
+        with self.assertRaises(mrna.InvalidmRNASequenceEncodingException):
+            self.mrna.check_aminoacid_sequence_encoding([''])
+        with self.assertRaises(mrna.InvalidmRNASequenceEncodingException):
+            self.mrna.check_aminoacid_sequence_encoding(['asdfd'])
+
+    def test_generates_valid_petrinet(self):
+        pnet_json_dict=self.mrna.get_pnet_json_dict()
+        pnet_validator.PNetValidator.validate_schema(pnet_json_dict)
+        
+
+
+if __name__ == '__main__':
+    unittest.main()

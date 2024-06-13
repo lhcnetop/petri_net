@@ -1,15 +1,22 @@
 import json
 import time as t
 import polars as pl
-from mrna.mRNAPNetBuilder import mRNAPNetBuilder
+from mrna.mrna2pnet import mRNAPNetBuilder
 import os.path as path
 
 
 #Experiment 1: given enough aminoacids to produce 100 preprotoinsulin, what is the relation between the amount of mRNA to the translation output
 input_file_path=path.join(path.curdir,'mrna','input2.json')
-save_to_file_root_path=path.join(path.curdir,'auxiliary_files','Experiment1','PetriNets')
+save_to_file_root_path=path.join(path.pardir,'petri_nets_files')
 
-
+with open(input_file_path) as json_file:
+    data=json.load(json_file)
+    filename=f'insulin_pnet_{150}.json'
+    data["simulation_parameters"]["initial_chains_marking"]=150
+    save_to_file=path.join(save_to_file_root_path,filename)
+    mrna_pnet=mRNAPNetBuilder(data,save_to_file)
+    
+'''
 with open(input_file_path) as json_file:
     data=json.load(json_file)
     for i in range(40):
@@ -18,7 +25,7 @@ with open(input_file_path) as json_file:
         data["simulation_parameters"]["initial_chains_marking"]=initial_chains_marking
         save_to_file=path.join(save_to_file_root_path,filename)
         mrna_pnet=mRNAPNetBuilder(data,save_to_file)
-    
+''' 
 
 
 

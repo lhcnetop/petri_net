@@ -1,16 +1,18 @@
 import numpy as np
 import copy
+from petrinet.pnet_validator import PNetValidator
 
 rand=np.random
 
+# TODO transformar pnet em uma interface, fazer com que essa classe seja uma vanilla pnet que implementa a interface e ajustar para que a opnet tb implemente a interface
+
 class PNet:
     def __init__(self,pnet_dict:dict):
+        PNetValidator.validate_schema(pnet_dict)
+        PNetValidator.validate_integrity(pnet_dict)
         dict_places=pnet_dict['places']
         self.initial_dict_places=copy.deepcopy(dict_places)
-        self.transitions_dict={}
-        self.transition_count={}
-        transitions_array=pnet_dict['transitions']
-        self.add_multiple_transitions(transitions_array)
+        self.transitions_dict=pnet_dict['transitions']
         self.reset()
         
     
@@ -48,9 +50,9 @@ class PNet:
 
     def add_multiple_transitions(self,transition_array):
         for transition in transition_array:
-            self.add_transition(transition['name'],transition['consumes'],transition['produces'])
+            self.add_transition(transition['name'],transition['consume'],transition['produce'])
 
-    def step(self,transition_name:str, skip_fireability_check:bool=False):
+    def __step(self,transition_name:str, skip_fireability_check:bool=False):
         
         fire=True
         
@@ -93,7 +95,24 @@ class PNet:
                 valid_transitions.append(transition)
         if len(valid_transitions)>0:
             random_transition=rand.choice(valid_transitions)
-            self.step(random_transition,True)
+            self.__step(random_transition,True)
+        else:
+            raise NoMoreValidTransitionsException("No more valid transitions possible")
+    
+    '''
+    step_logic should be a function that receives a 
+    '''
+    def custom_valid_step(self, step_logic):
+        valid_transitions=[]
+        for transition in self.transitions_dict:
+            if self.check_fireability(transition)[0]:
+                valid_transitions.append(transition)
+        if len(valid_transitions)>0:
+            transition=step_logic(copy.deepcopy(self.dict_places), valid_transitions)
+            if transition in valid_transitions:
+                self.__step(transition,True)
+            else:
+                raise InvalidTransitionFiredException(f'Custom step_logic returned an invalid transition: {transition}, expected a transition in: {",".join(valid_transitions)}')
         else:
             raise NoMoreValidTransitionsException("No more valid transitions possible")
         
@@ -114,7 +133,7 @@ class PNet:
                     random_transition=transition[0]
                     break
                     
-            self.step(random_transition,True)
+            self.__step(random_transition,True)
         else:
             raise NoMoreValidTransitionsException("No more valid transitions possible")
         
@@ -133,10 +152,16 @@ class PNet:
             except NoMoreValidTransitionsException:
                 #print(f"No more valid transitions, ending simulation at step: {i}")
                 break
-    
+
+class DuplicateTransition(Exception):
+    pass    
 
 class NoMoreValidTransitionsException(Exception):
     pass
 
+class InvalidTransitionFiredException(Exception):
+    pass
+
 class InvalidLawException(Exception):
     pass
+
