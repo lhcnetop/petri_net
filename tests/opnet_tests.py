@@ -2,7 +2,7 @@ import unittest
 import object_petrinet.opnet2pnet as opnet
 import petrinet.pnet_validator as pnet_validator
 
-##  python -m unittest tests/mrna_tests.py -v
+##  python -m unittest tests/opnet_tests.py -v
 
 json_input={
 	"pnet1":{
