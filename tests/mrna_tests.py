@@ -1,5 +1,5 @@
 import unittest
-import mrna.mrna2pnet as mrna
+import dummy_mrna.mrna2pnet as mrna
 import petrinet.pnet_validator as pnet_validator
 
 ##  python -m unittest tests/mrna_tests.py -v
