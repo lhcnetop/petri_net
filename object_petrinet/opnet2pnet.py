@@ -26,7 +26,6 @@ class ObjectPNet2PNetAdapter():
         if place_is_dict:
             tokens_in_place=place['tokens']
             self.pnet_dict['places'][self.get_adapted_pnet_place_name(pnet_name,place_name)]=tokens_in_place
-            print(f'Criado place: {pnet_name+place_name} com {tokens_in_place} tokens')
             self.__add_dependency(pnet_name,place['pnet'])
         elif place_is_int:
             tokens_in_place=place
