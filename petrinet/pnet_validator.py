@@ -8,7 +8,7 @@ class PNetValidator():
     
     @classmethod
     def validate_schema(cls, json_object_to_validate:dict):
-        pnet_json_schema_path='.\petrinet\pnet_schema.json'
+        pnet_json_schema_path=path.join('.','petrinet','pnet_schema.json')
         with open(pnet_json_schema_path,'r') as pnet_json_schema_path:
             pnet_json_schema=json.load(pnet_json_schema_path)
             jsonschemavalidate(json_object_to_validate,schema=pnet_json_schema)
@@ -33,6 +33,3 @@ class PNetValidator():
 
 class UnknownPlaceException(Exception):
     pass
-
-if __name__ == '__main__':
-    print(f'---------- Path: {path.abspath(".\petrinet\pnet_schema.json")}')
