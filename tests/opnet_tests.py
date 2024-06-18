@@ -1,6 +1,9 @@
 import unittest
-import object_petrinet.opnet2pnet as opnet
+import object_petrinet.opnet as opnet
 import petrinet.pnet_validator as pnet_validator
+from object_petrinet.opnet_validator import UnknownPlaceException
+from jsonschema.exceptions import ValidationError
+import copy
 
 ##  python -m unittest tests/opnet_tests.py -v
 
@@ -65,22 +68,33 @@ json_input={
 
 class OPNetTests(unittest.TestCase):
     def setUp(self) -> None:
-        self.opnet=opnet.ObjectPNet2PNetAdapter(json_input)
+        self.opnet=opnet.ObjectPNet(json_input)
         return super().setUp()
     
-    '''
-    def test_rejects_invalid_encoding(self):
-        with self.assertRaises(mrna.InvalidmRNASequenceEncodingException):
-            self.mrna.check_aminoacid_sequence_encoding(['as'])
-        with self.assertRaises(mrna.InvalidmRNASequenceEncodingException):
-            self.mrna.check_aminoacid_sequence_encoding([''])
-        with self.assertRaises(mrna.InvalidmRNASequenceEncodingException):
-            self.mrna.check_aminoacid_sequence_encoding(['asdfd'])
-    '''
+    
+    def test_rejects_invalid_schema_for_subpnet(self):
+        invalid_opnet=copy.deepcopy(json_input)
+        invalid_opnet['invalid_subpnet']=[]
+        with self.assertRaises(ValidationError):
+            opnet.ObjectPNet(invalid_opnet)
+        del invalid_opnet['invalid_subpnet']
+        invalid_opnet['invalid_subpnet']={
+            'places':''
+		}
+        with self.assertRaises(ValidationError):
+            opnet.ObjectPNet(invalid_opnet)
+            
+    def test_rejects_inconsistent_transitions(self):
+        invalid_opnet=copy.deepcopy(json_input)
+        invalid_opnet['pnet2']['transitions']['translation']['produce']['p']=1
+        with self.assertRaises(ValidationError):
+            opnet.ObjectPNet(UnknownPlaceException)
+        
 
     def test_generates_valid_petrinet(self):
-        pnet_json_dict=self.opnet.get_pnet_json_dict()
+        pnet_json_dict=self.opnet.get_vanilla_pnet_def()
         pnet_validator.PNetValidator.validate_schema(pnet_json_dict)
+        pnet_validator.PNetValidator.validate_integrity(pnet_json_dict)
         
 
 

@@ -1,4 +1,5 @@
 from object_petrinet.opnet import ObjectPNet
+from object_petrinet.opnet_validator import OPNetValidator
 
 json_input={
 	"pnet1":{
@@ -60,6 +61,11 @@ json_input={
 }
 
 
+
+OPNetValidator.validate_schema(json_input)
+OPNetValidator.validate_integrity(json_input)
+
+'''
 opnet=ObjectPNet(json_input)
 
 opnet.simulate(num_steps=1)
@@ -85,3 +91,4 @@ for pnet_name in json_input:
     places=pnet['places']
     for place_name in places:
         print(f'Tokens em PNet {pnet_name}/place {place_name}: {opnet.get_place_tokens(pnet_name=pnet_name,place_name=place_name)}')
+'''
