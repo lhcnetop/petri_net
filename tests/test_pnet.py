@@ -4,7 +4,6 @@ from petri_net_core.petrinet.pnet import InvalidTransitionFiredException
 import copy
 from jsonschema.exceptions import ValidationError
 from petri_net_core.petrinet.pnet_validator import UnknownPlaceException
-
 ##  python -m unittest tests/pnet_tests.py  -v
 
 ## TODO adicionar teste de que tudo continua funcionando mesmo com transições que não possuem places consumidos ou places produzidos
@@ -109,8 +108,6 @@ class PNetTests(unittest.TestCase):
         with self.assertRaises(InvalidTransitionFiredException):
           OkPnet.custom_valid_step(step_transition_t1)  
         
-            
-
 def step_transition_t1(dict_places, valid_transitions):
     return 't_1'
 
