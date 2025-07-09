@@ -28,7 +28,7 @@ requirements = [
 
 setup(
     name="petri-net-core",
-    version="0.1.0",
+    version="0.1.1",
     author="lhcnetop",
     author_email="lhcneto@gmail.com",
     description="Core Petri net simulation and analysis framework",
