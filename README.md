@@ -40,12 +40,17 @@ from object_petrinet.opnet import ObjectPetriNet
 Run tests with:
 ```bash
 # Run all tests
-python -m unittest discover -p "*_tests.py" -v
+default: python -m unittest discover -p "test_*.py" -v
 
 # Run specific test files
-python -m unittest tests/pnet_tests.py
-python -m unittest tests/opnet_tests.py
+python -m unittest tests/test_pnet.py
+python -m unittest tests/test_opnet.py
+python -m unittest tests/test_pnet_simulation_helper.py
 ```
+
+- `test_pnet.py`: Unit tests for the core PNet class
+- `test_opnet.py`: Unit tests for the Object Petri Net implementation
+- `test_pnet_simulation_helper.py`: Tests for simulation history export to Parquet using polars
 
 ## Related Projects
 
