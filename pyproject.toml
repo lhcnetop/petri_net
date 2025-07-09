@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "petri-net-core"
 version = "0.1.0"
-description = "Core Petri net simulation and analysis framework"
+description = "Petri net simulation and analysis framework"
 readme = "README.md"
 license = {text = "Apache-2.0"}
 authors = [
