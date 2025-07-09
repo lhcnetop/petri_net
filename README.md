@@ -54,3 +54,17 @@ python -m unittest tests/opnet_tests.py
 ## License
 
 Apache-2.0 License
+
+## Release & PyPI Publishing
+
+PyPI publishing is now fully automated and only happens when you push a version tag (e.g., v0.2.0) to the repository. This ensures that only intentional releases are published.
+
+### How to release a new version:
+1. Bump the version in `pyproject.toml`.
+2. Commit and push your changes to `main`.
+3. Create and push a tag matching the new version:
+   ```sh
+   git tag v0.2.0
+   git push origin v0.2.0
+   ```
+4. The GitHub Actions workflow will build and publish the package to PyPI automatically.
