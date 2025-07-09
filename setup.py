@@ -3,8 +3,28 @@ from setuptools import setup, find_packages
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
-with open("requirements.txt", "r", encoding="utf-8") as fh:
-    requirements = [line.strip() for line in fh if line.strip() and not line.startswith("#")]
+# Directly list dependencies instead of reading requirements.txt
+requirements = [
+    "attrs==23.2.0",
+    "colorama==0.4.6",
+    "iniconfig==2.0.0",
+    "jsonschema==4.22.0",
+    "jsonschema-specifications==2023.12.1",
+    "numpy==1.26.3",
+    "packaging==23.2",
+    "pandas==2.2.0",
+    "plotly==5.18.0",
+    "pluggy==1.5.0",
+    "polars==0.20.7",
+    "pyarrow==15.0.0",
+    "python-dateutil==2.8.2",
+    "pytz==2024.1",
+    "referencing==0.35.1",
+    "rpds-py==0.18.0",
+    "six==1.16.0",
+    "tenacity==8.2.3",
+    "tzdata==2023.4",
+]
 
 setup(
     name="petri-net-core",
