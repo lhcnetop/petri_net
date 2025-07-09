@@ -1,17 +1,18 @@
 from jsonschema import validate as jsonschemavalidate
 import json
 import os.path as path
+import os
 
 class OPNetValidator():
     def __init__(self):
         pass
     
-    @classmethod
-    def validate_schema(cls, json_object_to_validate:dict):
-        pnet_json_schema_path=path.join('.','object_petrinet','opnet_schema.json')
-        with open(pnet_json_schema_path,'r') as pnet_json_schema_path:
-            pnet_json_schema=json.load(pnet_json_schema_path)
-            jsonschemavalidate(json_object_to_validate,schema=pnet_json_schema)
+    @staticmethod
+    def validate_schema(opnet_dict):
+        schema_path = os.path.join(os.path.dirname(__file__), 'opnet_schema.json')
+        with open(schema_path, 'r') as opnet_json_schema_path:
+            pnet_json_schema=json.load(opnet_json_schema_path)
+            jsonschemavalidate(opnet_dict,schema=pnet_json_schema)
 
     '''
     Validate that the transitions reference only places declared in their own networks

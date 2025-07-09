@@ -1,9 +1,9 @@
 import unittest
-from petrinet.pnet import PNet
-from petrinet.pnet import InvalidTransitionFiredException
+from petri_net_core.petrinet.pnet import PNet
+from petri_net_core.petrinet.pnet import InvalidTransitionFiredException
 import copy
 from jsonschema.exceptions import ValidationError
-from petrinet.pnet_validator import UnknownPlaceException
+from petri_net_core.petrinet.pnet_validator import UnknownPlaceException
 
 ##  python -m unittest tests/pnet_tests.py  -v
 

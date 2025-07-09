@@ -1,6 +1,6 @@
-from object_petrinet.opnet2pnet import ObjectPNet2PNetAdapter
-from object_petrinet.opnet_validator import OPNetValidator
-from petrinet.pnet import PNet
+from petri_net_core.petrinet.pnet import PNet
+from petri_net_core.object_petrinet.opnet2pnet import ObjectPNet2PNetAdapter
+from petri_net_core.object_petrinet.opnet_validator import OPNetValidator
 import copy
 
 class ObjectPNet():

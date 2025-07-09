@@ -5,7 +5,7 @@ This replaces the mRNA-specific main.py that will be moved to the mrna_petrinet 
 """
 
 import json
-from petrinet.pnet import PNet
+from petri_net_core.petrinet.pnet import PNet
 
 def main():
     print("Petri Net Core - Basic Example")

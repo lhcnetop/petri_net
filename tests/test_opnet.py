@@ -1,7 +1,7 @@
 import unittest
-import object_petrinet.opnet as opnet
-import petrinet.pnet_validator as pnet_validator
-from object_petrinet.opnet_validator import UnknownPlaceException
+import petri_net_core.object_petrinet.opnet as opnet
+import petri_net_core.petrinet.pnet_validator as pnet_validator
+from petri_net_core.object_petrinet.opnet_validator import UnknownPlaceException
 from jsonschema.exceptions import ValidationError
 import copy
 

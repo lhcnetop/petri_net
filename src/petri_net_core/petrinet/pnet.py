@@ -1,6 +1,6 @@
 import numpy as np
 import copy
-from petrinet.pnet_validator import PNetValidator
+from petri_net_core.petrinet.pnet_validator import PNetValidator
 
 rand=np.random
 

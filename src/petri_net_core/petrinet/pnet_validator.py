@@ -1,17 +1,18 @@
 from jsonschema import validate as jsonschemavalidate
 import json
 import os.path as path
+import os
 
 class PNetValidator():
     def __init__(self):
         pass
     
-    @classmethod
-    def validate_schema(cls, json_object_to_validate:dict):
-        pnet_json_schema_path=path.join('.','petrinet','pnet_schema.json')
-        with open(pnet_json_schema_path,'r') as pnet_json_schema_path:
+    @staticmethod
+    def validate_schema(pnet_dict):
+        schema_path = os.path.join(os.path.dirname(__file__), 'pnet_schema.json')
+        with open(schema_path, 'r') as pnet_json_schema_path:
             pnet_json_schema=json.load(pnet_json_schema_path)
-            jsonschemavalidate(json_object_to_validate,schema=pnet_json_schema)
+            jsonschemavalidate(pnet_dict,schema=pnet_json_schema)
 
     '''
     Validate that the transitions do not reference unknown places
