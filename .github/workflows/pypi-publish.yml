@@ -16,17 +16,27 @@ jobs:
         with:
           python-version: '3.11'
 
-      - name: Bump patch version for build only
-        id: bump_patch
+      - name: Get previous and current version
+        id: get_version
         run: |
-          # Extract current version
+          git fetch --prune --unshallow || true
+          PREV_VERSION=$(git show HEAD^:pyproject.toml | grep '^version' | head -1 | sed 's/.*=\s*"\([0-9.]*\)"/\1/')
           CURR_VERSION=$(grep '^version' pyproject.toml | head -1 | sed 's/.*=\s*"\([0-9.]*\)"/\1/')
-          IFS='.' read -r major minor patch <<< "$CURR_VERSION"
-          new_patch=$((patch + 1))
-          NEW_VERSION="$major.$minor.$new_patch"
-          sed -i "s/version = \"$CURR_VERSION\"/version = \"$NEW_VERSION\"/" pyproject.toml
-          echo "Bumped patch version: $CURR_VERSION -> $NEW_VERSION"
-          echo "build_version=$NEW_VERSION" >> $GITHUB_ENV
+          echo "Previous version: $PREV_VERSION"
+          echo "Current version: $CURR_VERSION"
+          echo "prev_version=$PREV_VERSION" >> $GITHUB_ENV
+          echo "curr_version=$CURR_VERSION" >> $GITHUB_ENV
+
+      - name: Check for minor version bump
+        id: check_minor
+        run: |
+          PREV_MINOR=$(echo ${{ env.prev_version }} | cut -d. -f2)
+          CURR_MINOR=$(echo ${{ env.curr_version }} | cut -d. -f2)
+          if [ "$CURR_MINOR" != "" ] && [ "$PREV_MINOR" != "" ] && [ "$CURR_MINOR" -gt "$PREV_MINOR" ]; then
+            echo "minor_bump=true" >> $GITHUB_ENV
+          else
+            echo "minor_bump=false" >> $GITHUB_ENV
+          fi
 
       - name: Install build tools
         run: |
@@ -37,6 +47,7 @@ jobs:
         run: python -m build
 
       - name: Publish package to PyPI
+        if: env.minor_bump == 'true'
         env:
           TWINE_USERNAME: __token__
           TWINE_PASSWORD: ${{ secrets.PETRI_NET_CORE_CICD_TOKEN }}
