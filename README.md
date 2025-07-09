@@ -1,5 +1,6 @@
 # Petri Net Core
 
+<!-- Triggering GitHub Actions workflow test -->
 Core Petri net simulation and analysis framework for modeling discrete event systems.
 
 ## About
