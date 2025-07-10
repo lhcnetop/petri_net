@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "petri-net-core"
-version = "0.3.4"
+version = "0.3.5"
 description = "Petri net simulation and analysis framework"
 readme = "README.md"
 license = {text = "Apache-2.0"}
@@ -46,3 +46,6 @@ Issues = "https://github.com/lhcnetop/petri_net/issues"
 
 [tool.setuptools.packages.find]
 where = ["src"] 
+
+[tool.setuptools.package-data]
+"petri_net_core" = ["**/*.json"]
