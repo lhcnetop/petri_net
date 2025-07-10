@@ -49,3 +49,6 @@ where = ["src"]
 
 [tool.setuptools.package-data]
 "petri_net_core" = ["**/*.json"]
+
+[tool.setuptools]
+include-package-data = true
