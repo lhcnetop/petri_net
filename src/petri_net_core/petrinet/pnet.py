@@ -139,6 +139,11 @@ class PNet:
         
     def simulate_petrinet(self,num_steps:int,law:str='random',handler=None):
         self.reset()
+        
+        # Record initial state if handler is provided
+        if handler is not None:
+            handler(copy.deepcopy(self.dict_places), copy.deepcopy(self.firing_sequence), 0)
+        
         for i in range(num_steps):
             try:
                 if law=='random':
@@ -148,7 +153,7 @@ class PNet:
                 else:
                     raise InvalidLawException('Law parameter must be either "random" or "mass_action".')
                 if handler is not None:
-                    handler(copy.deepcopy(self.dict_places), copy.deepcopy(self.firing_sequence),i)
+                    handler(copy.deepcopy(self.dict_places), copy.deepcopy(self.firing_sequence),i+1)
             except NoMoreValidTransitionsException:
                 #print(f"No more valid transitions, ending simulation at step: {i}")
                 break

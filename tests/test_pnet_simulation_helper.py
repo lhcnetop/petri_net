@@ -48,15 +48,20 @@ class PNetSimulationHelperTests(unittest.TestCase):
             # Check columns
             expected_columns = {'transition', 'step', 'p_A', 'p_B', 'p_C', 'p_D'}
             self.assertTrue(expected_columns.issubset(set(df.columns)))
-            # Check number of rows (should be 5)
-            self.assertEqual(df.shape[0], 5)
-            # Check that step column is sequential
-            self.assertListEqual(list(df['step']), list(range(5)))
-            # Check that the first transition is None
+            # Check number of rows (should be 6: 1 initial state + 5 simulation steps)
+            self.assertEqual(df.shape[0], 6)
+            # Check that step column is sequential (0 to 5)
+            self.assertListEqual(list(df['step']), list(range(6)))
+            # Check that the first row shows initial state (no transition fired yet)
             self.assertIsNone(df['transition'][0])
+            # Check initial marking values
+            self.assertEqual(df['p_A'][0], 10, "Initial marking for p_A should be 10")
+            self.assertEqual(df['p_B'][0], 30, "Initial marking for p_B should be 30")
+            self.assertEqual(df['p_C'][0], 0, "Initial marking for p_C should be 0")
+            self.assertEqual(df['p_D'][0], 0, "Initial marking for p_D should be 0")
             # Check that place values are integers
             for place in ['p_A', 'p_B', 'p_C', 'p_D']:
-                self.assertTrue(df[place].to_numpy().dtype.kind in {'i', 'u'})
+                self.assertTrue(df[place].dtype in [pl.Int8, pl.Int16, pl.Int32, pl.Int64, pl.UInt8, pl.UInt16, pl.UInt32, pl.UInt64])
 
 if __name__ == '__main__':
     unittest.main() 
